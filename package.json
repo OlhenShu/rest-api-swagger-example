@@ -1,0 +1,19 @@
+{
+  "name": "rest-api-swagger-example",
+  "version": "1.0.0",
+  "description": "Reference example: REST API + Swagger docs for a Books list, built with plain Node.js (no frameworks).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3",
+    "swagger-ui-dist": "^5.32.8"
+  }
+}

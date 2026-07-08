@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: Books List REST API
+  description: Simple Books list REST API built with Node.js. Used as a reference example.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+tags:
+  - name: Books
+    description: Operations about books
+
+paths:
+  /api/v1/books:
+    get:
+      tags:
+        - Books
+      summary: Retrieve all books
+      description: Retrieves all books. Can be filtered by the `read` field.
+      parameters:
+        - name: filterByRead
+          in: query
+          required: false
+          description: Filter books by read status.
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      tags:
+        - Books
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewBook"
+            example:
+              title: Book example
+      responses:
+        "201":
+          description: Book created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+
+  /api/v1/books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Retrieve a book by id
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: Found book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    patch:
+      tags:
+        - Books
+      summary: Update a book by id
+      description: Updates the `title` and/or `read` fields of a book.
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBook"
+            example:
+              title: Updated book
+              read: true
+      responses:
+        "200":
+          description: Updated book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    delete:
+      tags:
+        - Books
+      summary: Delete a book by id
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: Book deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletedMessage"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+components:
+  parameters:
+    BookId:
+      name: id
+      in: path
+      required: true
+      description: Book identifier
+      schema:
+        type: string
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        read:
+          type: boolean
+      required:
+        - id
+        - title
+        - read
+    NewBook:
+      type: object
+      properties:
+        title:
+          type: string
+      required:
+        - title
+    UpdateBook:
+      type: object
+      properties:
+        title:
+          type: string
+        read:
+          type: boolean
+      minProperties: 1
+    DeletedMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Book with id 1 was deleted"
+    NotFoundError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Book with id 1 not found"
